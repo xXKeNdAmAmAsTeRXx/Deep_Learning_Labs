@@ -1,0 +1,32 @@
+# =============================================================================
+# Deep Learning Labs – Python Requirements
+# Tested against Python 3.10 / 3.11
+#
+# Install PyTorch separately before running this file (see README.md).
+# Then install the rest of the dependencies:
+#   pip install -r requirements.txt
+# =============================================================================
+
+# Core scientific stack
+numpy==1.26.4
+scipy==1.13.1
+pandas==2.2.2
+
+# Machine-learning utilities
+scikit-learn==1.5.0
+
+# Visualisation
+matplotlib==3.9.0
+seaborn==0.13.2
+
+# Hyperparameter optimisation
+optuna==3.6.1
+
+# Dataset access
+openml==0.14.2
+
+# TensorBoard
+tensorboard==2.17.0
+
+# Jupyter (optional – only needed if not already installed in your environment)
+notebook==7.2.2
