@@ -10,7 +10,7 @@ Lab2/            – PyTorch tensors, gradient descent, nn.Module
 Lab3/            – MLP classification on MNIST, optimisers, Optuna, dropout
 Lab4/            – MLP regression & multi-label classification, Optuna
 Lab5/            – TensorBoard integration and Optuna visualisation
-Lab6_7-project/  – Capstone project (specification PDF; materials coming soon)
+Lab6_7-project/  – Milestone project (specification PDF; materials coming soon)
 ```
 
 ---
@@ -99,7 +99,7 @@ Covers experiment tracking and visualisation with TensorBoard, integrated into P
 
 ---
 
-### Lab 6 / 7 – Capstone Project *(coming soon)*
+### Lab 6 / 7 – Milestone Project *(coming soon)*
 
 **Files:** `Lab6_7-project/Lab6_7.pdf`
 
