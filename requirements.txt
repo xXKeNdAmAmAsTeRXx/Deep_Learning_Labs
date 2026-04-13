@@ -46,4 +46,4 @@ tensorboard==2.17.0 # torch.utils.tensorboard.SummaryWriter;
                     # also tensorboard.summary (Lab5/2_Training_TensorBoard.ipynb)
 
 # Jupyter (optional – only needed if not already installed in your environment)
-notebook==7.2.1
+notebook==7.2.2
