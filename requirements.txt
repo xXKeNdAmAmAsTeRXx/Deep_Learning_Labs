@@ -1,0 +1,49 @@
+# =============================================================================
+# Deep Learning Labs – Python Requirements
+# Tested against Python 3.10 / 3.11
+# =============================================================================
+#
+# IMPORTANT – PyTorch must be installed BEFORE this file, using the correct
+# index URL for your compute backend:
+#
+#   CPU-only (any OS):
+#     pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cpu
+#
+#   CUDA 11.8:
+#     pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu118
+#
+#   CUDA 12.1:
+#     pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+#
+# Then install the rest of the dependencies:
+#   pip install -r requirements.txt
+# =============================================================================
+
+# Core scientific stack
+numpy==1.26.4       # used in every lab
+scipy==1.13.1       # Lab3/MNIST_MLP.ipynb – scipy.stats, scipy.stats.entropy
+pandas==2.2.2       # Lab4/1_Regression-part1.ipynb, Lab4/4_classification_architectures.ipynb
+
+# Machine-learning utilities
+scikit-learn==1.5.0 # sklearn.datasets, .linear_model, .metrics, .model_selection,
+                    #   .pipeline, .preprocessing – used in Lab1–Lab5
+
+# Visualisation
+matplotlib==3.9.0   # used in Lab1–Lab5 (matplotlib.pyplot)
+seaborn==0.13.2     # Lab1 (confusion matrices), Lab2 (tensor plots)
+
+# Hyperparameter optimisation
+optuna==3.6.1       # Lab3 (MNIST_SGD/ADAM/LR), Lab4 (Regression_optuna,
+                    #   Multilabel_classification), Lab5 (optuna_tensorboard)
+
+# Dataset access
+openml==0.14.2      # Lab4/3_Multilabel_classification.ipynb (dataset #36 – Segment),
+                    # Lab4/4_classification_architectures.ipynb & 5_shapes.ipynb
+                    #   (dataset #312 – Scene)
+
+# TensorBoard (all Lab5 notebooks)
+tensorboard==2.17.0 # torch.utils.tensorboard.SummaryWriter;
+                    # also tensorboard.summary (Lab5/2_Training_TensorBoard.ipynb)
+
+# Jupyter (optional – only needed if not already installed in your environment)
+notebook==7.2.1
