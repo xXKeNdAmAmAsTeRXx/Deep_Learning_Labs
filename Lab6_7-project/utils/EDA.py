@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import scipy.stats as stats
 from sklearn.feature_selection import mutual_info_regression, mutual_info_classif
+from sklearn.preprocessing import RobustScaler
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.tools.tools import add_constant
 import matplotlib.pyplot as plt
@@ -145,3 +146,31 @@ def plot_mutual_information(X, y, regression=True, title="Mutual Information Sco
     plt.show()
 
     return mi_series.sort_values(ascending=False)  # Return sorted descending for analysis
+
+# Prompt: Write a function with Robust Standard Scaler to scale given dataframe based on Robust Scaler from sklearn
+def apply_robust_scaling(df, columns=None):
+    """
+    Applies RobustScaler to specified numerical columns in a dataframe.
+
+    Parameters:
+    df (pd.DataFrame): The input dataframe.
+    columns (list): List of columns to scale. If None, scales all numerical columns.
+
+    Returns:
+    pd.DataFrame: A new dataframe with scaled features.
+    """
+    # 1. Create a copy to avoid modifying the original dataframe
+    df_scaled = df.copy()
+
+    # 2. Identify numerical columns if none are provided
+    if columns is None:
+        columns = df_scaled.select_dtypes(include=['number']).columns.tolist()
+
+    # 3. Initialize and apply the RobustScaler
+    scaler = RobustScaler()
+
+    # 4. Scale and update the dataframe
+    # We use [columns] to ensure we only transform and replace specific features
+    df_scaled[columns] = scaler.fit_transform(df_scaled[columns])
+
+    return df_scaled
