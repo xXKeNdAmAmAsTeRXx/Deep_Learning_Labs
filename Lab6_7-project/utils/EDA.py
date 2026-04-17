@@ -42,3 +42,37 @@ def check_normality(data, label="Dataset"):
     else:
         print("Result: Reject the null hypothesis (Data does NOT look normal).")
 
+
+# Prompt: write a python function to check correlation of numerical features (Pearson), function should return heatmap along with annotations
+def plot_correlation_heatmap(df, title="Correlation Heatmap", size=(12, 10)):
+    """
+    Calculates Pearson correlation for numerical features and plots a heatmap.
+
+    Parameters:
+    df (pd.DataFrame): The input dataframe.
+    title (str): The title of the plot.
+    size (tuple): The figure size (width, height).
+    """
+    # 1. Select only numerical columns and calculate Pearson correlation
+    corr_matrix = df.select_dtypes(include=['number']).corr(method='pearson')
+
+    # 2. Set up the matplotlib figure
+    plt.figure(figsize=size)
+
+    # 3. Create the heatmap
+    # annot=True: Adds the numerical values
+    # cmap='coolwarm': High contrast for positive/negative correlations
+    # fmt=".2f": Rounds annotations to 2 decimal places
+    heatmap = sns.heatmap(
+        corr_matrix,
+        annot=True,
+        fmt=".2f",
+        cmap='coolwarm',
+        linewidths=0.5,
+        square=True,
+        cbar_kws={"shrink": .8}
+    )
+
+    plt.title(title, fontsize=16)
+    plt.xticks(rotation=45, ha='right')
+    plt.show()
