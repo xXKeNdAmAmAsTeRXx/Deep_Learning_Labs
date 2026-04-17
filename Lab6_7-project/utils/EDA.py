@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import scipy.stats as stats
+from sklearn.feature_selection import mutual_info_regression, mutual_info_classif
 from statsmodels.stats.outliers_influence import variance_inflation_factor
 from statsmodels.tools.tools import add_constant
 import matplotlib.pyplot as plt
@@ -112,3 +113,35 @@ def calculate_vif(df):
     return vif_data.sort_values(by="VIF", ascending=False).reset_index(drop=True)
 
 # Prompt: write a python function that uses mutal_information from sklearn to calculate mi plot and show results on hbar plot
+def plot_mutual_information(X, y, regression=True, title="Mutual Information Scores"):
+    """
+    Calculates MI scores and plots them on a horizontal bar chart.
+
+    Parameters:
+    X (pd.DataFrame): Feature set (numerical).
+    y (pd.Series): Target variable.
+    regression (bool): True for continuous target, False for classification.
+    """
+    # 1. Select the appropriate MI tool
+    mi_func = mutual_info_regression if regression else mutual_info_classif
+
+    # 2. Calculate MI scores
+    # discrete_features='auto' handles automated detection of categorical vs continuous
+    scores = mi_func(X, y, random_state=42)
+
+    # 3. Create a Series for easy sorting and plotting
+    mi_series = pd.Series(scores, name="MI Scores", index=X.columns)
+    mi_series = mi_series.sort_values(ascending=True)  # Ascending for hbar beauty
+
+    # 4. Plotting
+    plt.figure(figsize=(10, len(X.columns) * 0.4))  # Dynamic height based on feature count
+    mi_series.plot(kind='barh', color='teal')
+
+    plt.title(title)
+    plt.xlabel("Mutual Information Score")
+    plt.ylabel("Features")
+    plt.grid(axis='x', linestyle='--', alpha=0.7)
+    plt.tight_layout()
+    plt.show()
+
+    return mi_series.sort_values(ascending=False)  # Return sorted descending for analysis
