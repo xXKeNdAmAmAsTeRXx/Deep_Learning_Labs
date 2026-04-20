@@ -31,3 +31,8 @@ def _calculate_val_loss(model, loader, criterion):
     avg_loss = running_loss / len(loader)
 
     return avg_loss
+
+
+def train_one_fold(fold_id:int, model, training_loader, val_loader, optimizer, criterion, n_epochs, max_norm:float=1.0):
+    pass
+    #TODO: traing one fold
