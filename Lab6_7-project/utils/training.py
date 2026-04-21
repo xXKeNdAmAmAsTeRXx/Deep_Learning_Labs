@@ -3,11 +3,20 @@ import os
 import torch
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.tensorboard import SummaryWriter
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, TensorDataset
 
-from Lab3.MNIST_SGD import avg_val_loss
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def get_dataSet():
+    #TODO: function to get Tensor Dataset
+    pass
+
+def get_train_loaders():
+    #TODO: function to get train and val data loader
+
+    pass
+
 
 
 def _train_one_epoch(model, loader, optimizer, criterion, max_norm:float=1.0):
