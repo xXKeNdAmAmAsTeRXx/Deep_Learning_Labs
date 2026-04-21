@@ -1,5 +1,11 @@
+import os
+
 import torch
 from torch.nn.utils import clip_grad_norm_
+from torch.utils.tensorboard import SummaryWriter
+from torch.utils.data import DataLoader
+
+from Lab3.MNIST_SGD import avg_val_loss
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -33,6 +39,28 @@ def _calculate_val_loss(model, loader, criterion):
     return avg_loss
 
 
-def train_one_fold(fold_id:int, model, training_loader, val_loader, optimizer, criterion, n_epochs, max_norm:float=1.0):
-    pass
-    #TODO: traing one fold
+def train_one_fold(fold_id:int, writer:SummaryWriter, model, training_loader:DataLoader, val_loader:DataLoader, optimizer, criterion, n_epochs:int, max_norm:float=1.0, write_model_dir:str=None):
+
+    best_val_loss = float("inf")
+    running_val_loss = 0.0
+    for epoch in range(n_epochs):
+        train_loss = _train_one_epoch(model, training_loader, optimizer, criterion, max_norm)
+        val_loss = _calculate_val_loss(model, val_loader, criterion)
+        running_val_loss += val_loss
+
+        writer.add_scalar('Train/Loss', train_loss, epoch)
+        writer.add_scalar('Val/Loss', val_loss, epoch)
+        writer.flush()
+
+        if write_model_dir is not None:
+            if best_val_loss > val_loss:
+                best_val_loss = val_loss
+
+                model_path = os.path.join(write_model_dir, f"fold_{fold_id}.pth")
+                torch.save(model.state_dict(), model_path)
+
+    avg_val_loss = running_val_loss / len(val_loader)
+
+
+    return avg_val_loss
+
