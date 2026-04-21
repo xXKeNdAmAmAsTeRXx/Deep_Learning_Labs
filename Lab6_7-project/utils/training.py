@@ -55,6 +55,7 @@ def _calculate_val_loss(model, loader, criterion):
 
 
 def train_one_fold(fold_id:int, model, training_loader:DataLoader, val_loader:DataLoader, optimizer, scheduler, criterion, n_epochs:int, max_norm:float=1.0, write_model_dir:str=None, writer:SummaryWriter=None):
+    model.to(DEVICE)
 
     best_val_loss = float("inf")
     running_val_loss = 0.0
