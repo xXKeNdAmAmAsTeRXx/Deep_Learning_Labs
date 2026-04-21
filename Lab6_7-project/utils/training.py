@@ -4,7 +4,7 @@ import pandas as pd
 import torch
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.tensorboard import SummaryWriter
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import DataLoader, TensorDataset, Subset
 
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -17,10 +17,11 @@ def get_dataSet(X_trainval:pd.DataFrame, y_trainval:pd.Series):
 
     return dataset
 
-def get_train_loaders():
-    #TODO: function to get train and val data loader
+def get_train_loaders(dataset:TensorDataset, train_idx, val_idx, batch_size:int=256, shuffle:bool=True):
+    train_loader = DataLoader(Subset(dataset, train_idx), batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(Subset(dataset, val_idx), batch_size=batch_size)
 
-    pass
+    return train_loader, val_loader
 
 
 
