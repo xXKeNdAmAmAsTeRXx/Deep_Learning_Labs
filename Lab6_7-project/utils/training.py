@@ -54,7 +54,7 @@ def _calculate_val_loss(model, loader, criterion):
     return avg_loss
 
 
-def train_one_fold(fold_id:int, model, training_loader:DataLoader, val_loader:DataLoader, optimizer, criterion, n_epochs:int, max_norm:float=1.0, write_model_dir:str=None, writer:SummaryWriter=None):
+def train_one_fold(fold_id:int, model, training_loader:DataLoader, val_loader:DataLoader, optimizer, scheduler, criterion, n_epochs:int, max_norm:float=1.0, write_model_dir:str=None, writer:SummaryWriter=None):
 
     best_val_loss = float("inf")
     running_val_loss = 0.0
@@ -62,6 +62,8 @@ def train_one_fold(fold_id:int, model, training_loader:DataLoader, val_loader:Da
         train_loss = _train_one_epoch(model, training_loader, optimizer, criterion, max_norm)
         val_loss = _calculate_val_loss(model, val_loader, criterion)
         running_val_loss += val_loss
+
+        scheduler.step(val_loss)
 
         if writer is not None:
             writer.add_scalar('Train/Loss', train_loss, epoch)
