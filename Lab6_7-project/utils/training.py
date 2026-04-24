@@ -18,6 +18,18 @@ from torch.optim.lr_scheduler import ReduceLROnPlateau, LRScheduler, LambdaLR
 from utils.MLPClassifier import MLPClassifier
 
 
+
+
+
+#Types
+Criterion: TypeAlias = Type[CrossEntropyLoss | MSELoss]
+Optimizer: TypeAlias = Type[SGD | Adam]
+Scheduler: TypeAlias = Type[ReduceLROnPlateau | LRScheduler | LambdaLR]
+Model: TypeAlias = Type[MLPClassifier]
+
+DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+# Get/Create Functions
 # Prompt (Sonnet 4.6):
 '''
 Basing on following function structure, finish functions, do not change code of finished function. Refer to todos and structure.
@@ -86,15 +98,6 @@ include edge case: betas for adam could be safed as beta1 and beta2
 
 + additional hand on writing
 '''
-
-
-#Types
-Criterion: TypeAlias = Type[CrossEntropyLoss | MSELoss]
-Optimizer: TypeAlias = Type[SGD | Adam]
-Scheduler: TypeAlias = Type[ReduceLROnPlateau | LRScheduler | LambdaLR]
-Model: TypeAlias = Type[MLPClassifier]
-
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def _parse_series(parameters:pd.Series) -> dict[str, Any]:
     best = dict(**parameters)
@@ -205,6 +208,9 @@ def create_training_dict(
         "writer": writer,
         "random_state": random_state
     }
+
+
+# Training Functions
 
 def _train_one_epoch(model, loader, optimizer, criterion, max_norm:float=1.0):
     model.train()
