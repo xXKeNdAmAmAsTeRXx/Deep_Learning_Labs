@@ -6,8 +6,20 @@ from torch.nn.utils import clip_grad_norm_
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data import DataLoader, TensorDataset, Subset
 
+from utils.MLPClassifier import MLPClassifier
+
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def create_model(parameters:pd.Series, in_out_shape:tuple[int, int]) -> object:
+    model = MLPClassifier(
+        input_dim=in_out_shape[0],
+        output_dim=in_out_shape[1],
+        n_hidden=parameters['params_n_hidden'],
+        hidden_dim=parameters['params_hidden_dim']
+    )
+
+    return model
 
 def get_dataSet(X_trainval:pd.DataFrame, y_trainval:pd.Series | pd.DataFrame):
     X_trainval_tensor = torch.from_numpy(X_trainval.to_numpy()).float()
