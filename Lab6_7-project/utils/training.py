@@ -9,7 +9,7 @@ from torch.utils.data import DataLoader, TensorDataset, Subset
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-def get_dataSet(X_trainval:pd.DataFrame, y_trainval:pd.Series):
+def get_dataSet(X_trainval:pd.DataFrame, y_trainval:pd.Series | pd.DataFrame):
     X_trainval_tensor = torch.from_numpy(X_trainval.to_numpy()).float()
     y_trainval_tensor = torch.from_numpy(y_trainval.to_numpy()).float()
 
