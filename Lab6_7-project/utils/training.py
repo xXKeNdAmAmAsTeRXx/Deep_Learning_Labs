@@ -10,7 +10,6 @@ import torch
 from typing import Type, TypeAlias, Any
 
 from sklearn.model_selection import KFold
-from torch.ao.pruning import scheduler
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.tensorboard import SummaryWriter
 from torch.utils.data import DataLoader, TensorDataset, Subset
