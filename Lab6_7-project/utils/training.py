@@ -193,10 +193,6 @@ def create_training_dict(
 
     params_dict = _parse_series(parameters)
 
-    model = create_model(parameters, in_out_shape=(data.shape[1], target.shape[1]))
-    optimizer = get_optimizer(parameters, classes["optimizer_class"])(model.parameters())
-    scheduler = get_scheduler(optimizer, parameters, classes["scheduler_class"])
-
     dataset = get_dataSet(X_trainval=data, y_trainval=target)
 
     return {
@@ -204,9 +200,9 @@ def create_training_dict(
         "n_epochs": n_epochs,
         "dataset": dataset,
         "batch_size": params_dict["batch_size"],
-        "model": model,
-        "optimizer": optimizer,
-        "scheduler": scheduler,
+        "model_fn": lambda: create_model(parameters, in_out_shape=(data.shape[1], target.shape[1])),
+        "optimizer_cls": get_optimizer(parameters, classes["optimizer_class"]),
+        "scheduler_cls": lambda opt: get_scheduler(opt, parameters, classes["scheduler_class"]),
         "criterion": criterion(),
         "max_norm": max_norm,
         "write_model_dir": write_model_dir,
@@ -287,10 +283,10 @@ def train_from_dict(training_dict:dict[str, Any]):
                                                      batch_size=int(training_dict['batch_size']))
 
         # Model, Optimizer, Criterion
-        model = copy.deepcopy(training_dict['model'])
         criterion = training_dict['criterion']
-        optimizer = copy.deepcopy(training_dict['optimizer'])
-        scheduler = copy.deepcopy(training_dict['scheduler'])
+        model = training_dict['model_fn']()
+        optimizer = training_dict['optimizer_cls'](model.parameters())
+        scheduler = training_dict['scheduler_cls'](optimizer)
 
         # Fold Training
         loss = train_one_fold(fold, model, train_loader, val_loader, optimizer, scheduler, criterion, n_epochs=training_dict['n_epochs'],
