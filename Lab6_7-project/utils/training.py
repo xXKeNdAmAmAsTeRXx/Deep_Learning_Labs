@@ -1,5 +1,7 @@
 import os
 import time
+import copy
+
 
 import inspect
 import functools
@@ -259,6 +261,7 @@ def train_one_fold(fold_id:int, model, training_loader:DataLoader, val_loader:Da
         if writer is not None:
             writer.add_scalar(f'train_loss/fold_{fold_id}', train_loss, epoch)
             writer.add_scalar(f'val_loss/fold_{fold_id}', val_loss, epoch)
+            writer.add_scalar(f'learining_rate/fold{fold_id}', scheduler.get_last_lr()[0], epoch)
             writer.flush()
 
         if write_model_dir is not None:
@@ -284,10 +287,10 @@ def train_from_dict(training_dict:dict[str, Any]):
                                                      batch_size=int(training_dict['batch_size']))
 
         # Model, Optimizer, Criterion
-        model = training_dict['model']
+        model = copy.deepcopy(training_dict['model'])
         criterion = training_dict['criterion']
-        optimizer = training_dict['optimizer']
-        scheduler = training_dict['scheduler']
+        optimizer = copy.deepcopy(training_dict['optimizer'])
+        scheduler = copy.deepcopy(training_dict['scheduler'])
 
         # Fold Training
         loss = train_one_fold(fold, model, train_loader, val_loader, optimizer, scheduler, criterion, n_epochs=training_dict['n_epochs'],
