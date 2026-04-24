@@ -1,5 +1,6 @@
 import os
 import time
+import gc
 
 import inspect
 import functools
@@ -289,6 +290,10 @@ def train_from_dict(training_dict:dict[str, Any]):
         # Fold Training
         loss = train_one_fold(fold, model, train_loader, val_loader, optimizer, scheduler, criterion, n_epochs=training_dict['n_epochs'],
                               write_model_dir=training_dict['write_model_dir'], writer=training_dict['writer'])
+
+        del model, optimizer, scheduler
+        gc.collect()
+        torch.cuda.empty_cache()
 
         stop = time.time()
         print(f'validation loss = {loss:.4f}')
