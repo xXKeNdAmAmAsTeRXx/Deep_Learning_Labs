@@ -1,4 +1,5 @@
 import os
+import time
 
 import inspect
 import functools
@@ -7,6 +8,7 @@ import pandas as pd
 import torch
 from typing import Type, TypeAlias, Any
 
+from sklearn.model_selection import KFold
 from torch.ao.pruning import scheduler
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.tensorboard import SummaryWriter
@@ -199,10 +201,11 @@ def create_training_dict(
         "fold_id": list(range(1, n_folds + 1)),
         "n_epochs": n_epochs,
         "dataset": dataset,
+        "batch_size": params_dict["batch_size"],
         "model": model,
         "optimizer": optimizer,
         "scheduler": scheduler,
-        "criterion": criterion,
+        "criterion": criterion(),
         "max_norm": max_norm,
         "write_model_dir": write_model_dir,
         "writer": writer,
@@ -254,8 +257,8 @@ def train_one_fold(fold_id:int, model, training_loader:DataLoader, val_loader:Da
         scheduler.step(val_loss)
 
         if writer is not None:
-            writer.add_scalar('Train/Loss', train_loss, epoch)
-            writer.add_scalar('Val/Loss', val_loss, epoch)
+            writer.add_scalar(f'train_loss/fold_{fold_id}', train_loss, epoch)
+            writer.add_scalar(f'val_loss/fold_{fold_id}', val_loss, epoch)
             writer.flush()
 
         if write_model_dir is not None:
@@ -270,3 +273,26 @@ def train_one_fold(fold_id:int, model, training_loader:DataLoader, val_loader:Da
 
     return avg_val_loss
 
+def train_from_dict(training_dict:dict[str, Any]):
+    kf = KFold(n_splits=5, shuffle=True, random_state=42)
+    for fold, (train_idx, val_idx) in enumerate(kf.split(range(len(training_dict['dataset'])))):
+        print(f'\n ===================== Training Fold {fold}  ===================== \n')
+        start = time.time()
+
+        # Loaders
+        train_loader, val_loader = get_train_loaders(training_dict['dataset'], train_idx=train_idx, val_idx=val_idx,
+                                                     batch_size=int(training_dict['batch_size']))
+
+        # Model, Optimizer, Criterion
+        model = training_dict['model']
+        criterion = training_dict['criterion']
+        optimizer = training_dict['optimizer']
+        scheduler = training_dict['scheduler']
+
+        # Fold Training
+        loss = train_one_fold(fold, model, train_loader, val_loader, optimizer, scheduler, criterion, n_epochs=training_dict['n_epochs'],
+                              write_model_dir=training_dict['write_model_dir'], writer=training_dict['writer'])
+
+        stop = time.time()
+        print(f'validation loss = {loss:.4f}')
+        print(f'Time: {stop-start:.2f} seconds')
