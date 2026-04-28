@@ -108,7 +108,7 @@ class Predictor:
         else:
             return self._majority_voting_ensemble(data)
 
-    def metric_report(self, data: Union[np.ndarray, pd.DataFrame], target: Union[np.ndarray, pd.Series], ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True) -> None:
+    def metric_report(self, data: Union[np.ndarray, pd.DataFrame], target: Union[np.ndarray, pd.Series], ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True) -> None | dict[str, float]:
         if isinstance(target, pd.Series):
             target = target.values
 
