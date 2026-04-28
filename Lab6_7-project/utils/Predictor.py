@@ -49,8 +49,6 @@ class Predictor:
         else:
             return mean_proba
 
-    import numpy as np
-
     def _majority_voting_ensemble(self, data: np.ndarray, return_votes:bool=False) -> np.ndarray:
         data_t = torch.from_numpy(data).float().to(self.device)
 
@@ -72,13 +70,29 @@ class Predictor:
 
         return majority_vote
 
-    def predict_proba(self,data, ensemble:Literal['mean_response','majority_voting'] = "mean_response"):
-        # TODO: Predction on given data returning probability
-        pass
+    def predict_proba(self, data):
+        data_t = torch.from_numpy(data).float().to(self.device)
+
+        all_probas = []
+        for idx, f in enumerate(self.folds):
+            f.to(self.device)
+            f.eval()
+            with torch.no_grad():
+                outputs = f(data_t)
+                proba = torch.softmax(outputs, dim=1).cpu().numpy()
+                all_probas.append(proba)
+
+        mean_proba = np.mean(all_probas, axis=0)
+
+        return mean_proba
+
+
 
     def predict(self, data, ensemble:Literal['mean_response','majority_voting'] = "mean_response"):
-        # TODO: Prediction on Given data with chosen ensemble method
-        pass
+        if ensemble == "mean_response":
+            return self._mean_response_ensemble(data)
+        else:
+            return self._majority_voting_ensemble(data)
 
     def metric_report(self, data, target,ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True):
         # TODO: performe prediction and calculate metrics, show vizualizations
