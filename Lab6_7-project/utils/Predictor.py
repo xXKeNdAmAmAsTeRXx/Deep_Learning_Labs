@@ -1,4 +1,5 @@
 from typing import Literal
+import json
 import os
 
 import numpy as np
@@ -10,22 +11,27 @@ from MLPClassifier import MLPClassifier
 
 # TODO: static Typing
 class Predictor:
-    def __init__(self, path:str, model_params:dict, classification:bool = True) -> None:
+    def __init__(self, path:str, classification:bool = True) -> None:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        folds_path = os.listdir(path)
+        model_dir_list = sorted(os.listdir(path))
+        dict_path = os.path.join(path, model_dir_list.pop(0))
+        with open(dict_path, 'r') as f:
+            model_params = json.load(f)
+
         self.folds = []
-        for f in folds_path:
+        for f in model_dir_list:
+            fold_path = os.path.join(path, f)
             m = MLPClassifier(**model_params)
-            m.load_state_dict(torch.load(os.path.join(path, f)))
+            m.load_state_dict(torch.load(fold_path))
             self.folds.append(m)
 
-        self.in_out_dim = (model_params['input_dim'], model_params['output_dim'])
+        self.model_params = model_params
         self.classification = classification
 
     def _mean_response_ensemble(self, data:np.ndarray) -> np.ndarray:
         data_t = torch.tensor(data)
-        probs = np.zeros(self.in_out_dim[0])
+        probs = np.zeros(data.shape[0], self.model_params['output_dim'])
         for idx, f in enumerate(self.folds):
             f.eval()
             with torch.no_grad():
