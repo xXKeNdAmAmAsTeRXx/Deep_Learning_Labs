@@ -8,6 +8,7 @@ import functools
 import pandas as pd
 import torch
 from typing import Type, TypeAlias, Any
+import json
 
 from sklearn.model_selection import KFold
 from torch.nn.utils import clip_grad_norm_
@@ -119,6 +120,20 @@ def create_model(parameters:pd.Series, in_out_shape:tuple[int, int]) -> object:
 
     return model
 
+def _save_model_dict(parameters:pd.Series, in_out_shape:tuple[int, int], write_model_dir:str) -> None:
+    params_dict = _parse_series(parameters)
+    model_dict = {
+        'input_dim': in_out_shape[0],
+        'output_dim': in_out_shape[1],
+        'n_hidden': params_dict['n_hidden'],
+        'hidden_dim': params_dict['hidden_dim']
+    }
+
+    path = os.path.join(write_model_dir, 'model_dict.json')
+    with open(path, 'w') as f:
+        json.dump(model_dict, f)
+
+    print(f'Model dict saved in {path}')
 
 def _merge_betas(params_dict: dict) -> dict:
     """Merge beta1/beta2 keys into a single betas tuple if present."""
@@ -190,6 +205,9 @@ def create_training_dict(
         }
 
     params_dict = _parse_series(parameters)
+
+    if write_model_dir is not None:
+        _save_model_dict(parameters, in_out_shape=(data.shape[1], target.shape[1]), write_model_dir=write_model_dir)
 
     dataset = get_dataSet(X_trainval=data, y_trainval=target)
 
