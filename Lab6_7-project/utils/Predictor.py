@@ -10,7 +10,7 @@ from MLPClassifier import MLPClassifier
 
 # TODO: static Typing
 class Predictor:
-    def __init__(self, path:str, model_params:dict) -> None:
+    def __init__(self, path:str, model_params:dict, classification:bool = True) -> None:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         folds_path = os.listdir(path)
@@ -21,6 +21,7 @@ class Predictor:
             self.folds.append(m)
 
         self.in_out_dim = (model_params['input_dim'], model_params['output_dim'])
+        self.classification = classification
 
     def _mean_response_ensemble(self, data:np.ndarray) -> np.ndarray:
         data_t = torch.tensor(data)
@@ -31,10 +32,14 @@ class Predictor:
                 outputs = f(data_t)
                 proba = torch.softmax(outputs, dim=0).numpy()
 
-            mean_proba = np.mean(proba, axis=0)
-            winner = mean_proba.argmax()
+            probs[idx] = proba
 
-        return winner
+        mean_proba = np.mean(proba, axis=0)
+
+        if self.classification:
+            return mean_proba.argmax(axis=0)
+        else:
+            return mean_proba
 
     def _majority_voting_ensemble(self):
         pass
