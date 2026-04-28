@@ -3,8 +3,13 @@ import json
 import os
 
 import numpy as np
+import pandas as pd
 import torch
 from utils.MLPClassifier import MLPClassifier
+from sklearn.metrics import classification_report, roc_auc_score, RocCurveDisplay, confusion_matrix, mean_squared_error, \
+    r2_score, roc_curve, auc
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # TODO: Imports
 
@@ -71,6 +76,7 @@ class Predictor:
         return majority_vote
 
     def predict_proba(self, data):
+        assert self.classification
         data_t = torch.from_numpy(data).float().to(self.device)
 
         all_probas = []
@@ -89,14 +95,54 @@ class Predictor:
 
 
     def predict(self, data, ensemble:Literal['mean_response','majority_voting'] = "mean_response"):
+        assert ensemble == 'mean_response' or self.classification
+
         if ensemble == "mean_response":
             return self._mean_response_ensemble(data)
         else:
             return self._majority_voting_ensemble(data)
 
-    def metric_report(self, data, target,ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True):
-        # TODO: performe prediction and calculate metrics, show vizualizations
-        pass
+    def metric_report(self, data, target,ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True) -> None:
+
+        assert  ensemble == 'mean_response' or self.classification
+
+        if ensemble == 'mean_response':
+            yhat = self._mean_response_ensemble(data)
+        else:
+            yhat = self._majority_voting_ensemble(data)
+
+        if not self.classification:
+            r2 = r2_score(target, yhat)
+            mse = mean_squared_error(target, yhat)
+
+            result = {'r2': r2, 'mse': mse}
+            return result
+
+        y_proba = self.predict_proba(data)
+        report = classification_report(target, yhat)
+
+
+        if plot_results:
+
+            fig, ax = plt.subplots(1,2, figsize=(20, 6))
+            ax = ax.flatten()
+
+            cf_mtx = confusion_matrix(target, yhat)
+            sns.heatmap(cf_mtx, annot=True, fmt="g", ax=ax[0])
+
+            for idx in range(self.model_params['output_dim']):
+                fpr, tpr, thresholds = roc_curve(target == idx, y_proba[:, idx])
+                roc_auc = auc(fpr, tpr)
+                display = RocCurveDisplay(fpr=fpr, tpr=tpr, roc_auc=roc_auc)
+                display.plot(ax=ax[1])
+
+            ax[1].plot([0, 1], [0, 1], color='white', linestyle='--')
+            ax[1].set_title('Multiclass ROC Curve (One-vs-Rest)')
+            plt.show()
+
+        print(report)
+
+        return None
 
     def statistical_report(self, data, target, choosen_test:str,ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True):
         #TODO: function to wrap results of chosen statistical test
