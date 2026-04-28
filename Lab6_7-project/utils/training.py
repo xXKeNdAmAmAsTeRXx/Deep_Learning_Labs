@@ -130,7 +130,7 @@ def _save_model_dict(parameters:pd.Series, in_out_shape:tuple[int, int], write_m
     }
 
     path = os.path.join(write_model_dir, 'model_dict.json')
-    with open(path, 'w') as f:
+    with open(path, 'w', encoding='utf-8-sig') as f:
         json.dump(model_dict, f)
 
     print(f'Model dict saved in {path}')

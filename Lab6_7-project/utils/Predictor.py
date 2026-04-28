@@ -4,7 +4,7 @@ import os
 
 import numpy as np
 import torch
-from MLPClassifier import MLPClassifier
+from utils.MLPClassifier import MLPClassifier
 
 # TODO: Imports
 
@@ -14,9 +14,10 @@ class Predictor:
     def __init__(self, path:str, classification:bool = True) -> None:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        model_dir_list = sorted(os.listdir(path))
+        model_dir_list = sorted(os.listdir(path))[::-1]
         dict_path = os.path.join(path, model_dir_list.pop(0))
-        with open(dict_path, 'r') as f:
+
+        with open(dict_path, 'r', encoding='utf-8-sig') as f:
             model_params = json.load(f)
 
         self.folds = []
