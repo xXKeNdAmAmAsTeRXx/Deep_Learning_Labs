@@ -1,4 +1,4 @@
-from typing import Literal
+from typing import Literal, Union
 import json
 import os
 
@@ -35,7 +35,9 @@ class Predictor:
         self.model_params = model_params
         self.classification = classification
 
-    def _mean_response_ensemble(self, data:np.ndarray) -> np.ndarray:
+    def _mean_response_ensemble(self, data: Union[np.ndarray, pd.DataFrame]) -> np.ndarray:
+        if isinstance(data, pd.DataFrame):
+            data = data.values
         data_t = torch.from_numpy(data).float().to(self.device)
 
         all_probas = []
@@ -54,7 +56,9 @@ class Predictor:
         else:
             return mean_proba
 
-    def _majority_voting_ensemble(self, data: np.ndarray, return_votes:bool=False) -> np.ndarray:
+    def _majority_voting_ensemble(self, data: Union[np.ndarray, pd.DataFrame], return_votes:bool=False) -> np.ndarray:
+        if isinstance(data, pd.DataFrame):
+            data = data.values
         data_t = torch.from_numpy(data).float().to(self.device)
 
         all_preds = []
@@ -75,7 +79,9 @@ class Predictor:
 
         return majority_vote
 
-    def predict_proba(self, data):
+    def predict_proba(self, data: Union[np.ndarray, pd.DataFrame]):
+        if isinstance(data, pd.DataFrame):
+            data = data.values
         assert self.classification
         data_t = torch.from_numpy(data).float().to(self.device)
 
@@ -94,7 +100,7 @@ class Predictor:
 
 
 
-    def predict(self, data, ensemble:Literal['mean_response','majority_voting'] = "mean_response"):
+    def predict(self, data: Union[np.ndarray, pd.DataFrame], ensemble:Literal['mean_response','majority_voting'] = "mean_response"):
         assert ensemble == 'mean_response' or self.classification
 
         if ensemble == "mean_response":
@@ -102,7 +108,9 @@ class Predictor:
         else:
             return self._majority_voting_ensemble(data)
 
-    def metric_report(self, data, target,ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True) -> None:
+    def metric_report(self, data: Union[np.ndarray, pd.DataFrame], target: Union[np.ndarray, pd.Series], ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True) -> None:
+        if isinstance(target, pd.Series):
+            target = target.values
 
         assert  ensemble == 'mean_response' or self.classification
 
@@ -144,6 +152,18 @@ class Predictor:
 
         return None
 
-    def statistical_report(self, data, target, choosen_test:str,ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True):
+    def human_pred(self, data: Union[np.ndarray, pd.DataFrame], ensemble:Literal['mean_response','majority_voting'] = "mean_response") -> np.ndarray:
+        if ensemble == 'mean_response':
+            yhat = self._mean_response_ensemble(data)
+        else:
+            yhat = self._majority_voting_ensemble(data)
+
+        map = {0: 'Moderate', 1: 'Good', 2: 'Poor', 3: 'Hazardous'}
+
+        map_func = np.vectorize(map.get)
+        pred = map_func(yhat)
+        return pred
+
+    def statistical_report(self, data: Union[np.ndarray, pd.DataFrame], target: Union[np.ndarray, pd.Series], choosen_test:str,ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True):
         #TODO: function to wrap results of chosen statistical test
         pass
