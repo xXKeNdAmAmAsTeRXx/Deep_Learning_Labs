@@ -131,12 +131,15 @@ class Predictor:
 
 
         if plot_results:
-
+            labels = ['Moderate', 'Good', 'Poor', 'Hazardous']
             fig, ax = plt.subplots(1,2, figsize=(20, 6))
             ax = ax.flatten()
 
             cf_mtx = confusion_matrix(target, yhat)
             sns.heatmap(cf_mtx, annot=True, fmt="g", ax=ax[0])
+            ax[0].set_xticklabels(labels)
+            ax[0].set_yticklabels(labels)
+            ax[0].set_title('Confusion Matrix')
 
             for idx in range(self.model_params['output_dim']):
                 fpr, tpr, thresholds = roc_curve(target == idx, y_proba[:, idx])
@@ -146,6 +149,7 @@ class Predictor:
 
             ax[1].plot([0, 1], [0, 1], color='white', linestyle='--')
             ax[1].set_title('Multiclass ROC Curve (One-vs-Rest)')
+            plt.legend(labels)
             plt.show()
 
         print(report)
