@@ -49,8 +49,28 @@ class Predictor:
         else:
             return mean_proba
 
-    def _majority_voting_ensemble(self):
-        pass
+    import numpy as np
+
+    def _majority_voting_ensemble(self, data: np.ndarray, return_votes:bool=False) -> np.ndarray:
+        data_t = torch.from_numpy(data).float().to(self.device)
+
+        all_preds = []
+        for f in self.folds:
+            f.to(self.device)
+            f.eval()
+            with torch.no_grad():
+                outputs = f(data_t)
+                fold_preds = torch.softmax(outputs, dim=1).cpu().numpy().argmax(axis=1)
+                all_preds.append(fold_preds)
+        all_preds = np.array(all_preds)
+
+        majority_vote = np.array([np.bincount(col, minlength=outputs.shape[1]).argmax() for col in all_preds.T])
+
+        if return_votes:
+            votes = np.apply_along_axis(lambda x: np.bincount(x, minlength=outputs.shape[1]), axis=0, arr=all_preds)
+            return votes
+
+        return majority_vote
 
     def predict_proba(self,data, ensemble:Literal['mean_response','majority_voting'] = "mean_response"):
         # TODO: Predction on given data returning probability
