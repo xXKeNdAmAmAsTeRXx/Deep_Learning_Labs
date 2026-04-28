@@ -31,20 +31,21 @@ class Predictor:
         self.classification = classification
 
     def _mean_response_ensemble(self, data:np.ndarray) -> np.ndarray:
-        data_t = torch.tensor(data)
-        probs = np.zeros(data.shape[0], self.model_params['output_dim'])
+        data_t = torch.from_numpy(data).float().to(self.device)
+
+        all_probas = []
         for idx, f in enumerate(self.folds):
+            f.to(self.device)
             f.eval()
             with torch.no_grad():
                 outputs = f(data_t)
-                proba = torch.softmax(outputs, dim=0).numpy()
+                proba = torch.softmax(outputs, dim=1).cpu().numpy()
+                all_probas.append(proba)
 
-            probs[idx] = proba
-
-        mean_proba = np.mean(proba, axis=0)
+        mean_proba = np.mean(all_probas, axis=0)
 
         if self.classification:
-            return mean_proba.argmax(axis=0)
+            return mean_proba.argmax(axis=1)
         else:
             return mean_proba
 
