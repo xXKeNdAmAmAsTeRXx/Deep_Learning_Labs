@@ -167,7 +167,3 @@ class Predictor:
         map_func = np.vectorize(map.get)
         pred = map_func(yhat)
         return pred
-
-    def statistical_report(self, data: Union[np.ndarray, pd.DataFrame], target: Union[np.ndarray, pd.Series], choosen_test:str,ensemble:Literal['mean_response','majority_voting'] = "mean_response", plot_results:bool = True):
-        #TODO: function to wrap results of chosen statistical test
-        pass
