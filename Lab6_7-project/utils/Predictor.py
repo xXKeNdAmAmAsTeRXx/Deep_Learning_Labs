@@ -6,27 +6,34 @@ import numpy as np
 import pandas as pd
 import torch
 from utils.MLPClassifier import MLPClassifier
-from sklearn.metrics import classification_report, roc_auc_score, RocCurveDisplay, confusion_matrix, mean_squared_error, \
+from sklearn.metrics import classification_report, RocCurveDisplay, confusion_matrix, mean_squared_error, \
     r2_score, roc_curve, auc
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-# TODO: Imports
 
-
-# TODO: static Typing
 class Predictor:
     def __init__(self, path:str, classification:bool = True) -> None:
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
         model_dir_list = sorted(os.listdir(path))[::-1]
-        dict_path = os.path.join(path, model_dir_list.pop(0))
 
+        dict_path = os.path.join(path, 'model_dict.json')
         with open(dict_path, 'r', encoding='utf-8-sig') as f:
             model_params = json.load(f)
 
+        labels_path = os.path.join(path, 'data_labels.json')
+        if os.path.exists(labels_path):
+            with open(labels_path, 'r', encoding='utf-8-sig') as f:
+                labels = json.load(f)
+            self.labels_dict = {int(k): v for k, v in labels.items()}
+        else:
+            self.labels_dict = None
+
+        folds_list = [s for s in model_dir_list if s.startswith('fold_')]
+
         self.folds = []
-        for f in model_dir_list:
+        for f in folds_list:
             fold_path = os.path.join(path, f)
             m = MLPClassifier(**model_params)
             m.load_state_dict(torch.load(fold_path, map_location=self.device))
@@ -99,8 +106,6 @@ class Predictor:
 
         return mean_proba
 
-
-
     def predict(self, data: Union[np.ndarray, pd.DataFrame], ensemble:Literal['mean_response','majority_voting'] = "mean_response"):
         assert ensemble == 'mean_response' or self.classification
 
@@ -132,14 +137,11 @@ class Predictor:
 
 
         if plot_results:
-            labels = ['Good','Hazardous','Moderate','Poor']
             fig, ax = plt.subplots(1,2, figsize=(20, 6))
             ax = ax.flatten()
 
             cf_mtx = confusion_matrix(target, yhat)
             sns.heatmap(cf_mtx, annot=True, fmt="g", ax=ax[0])
-            ax[0].set_xticklabels(labels)
-            ax[0].set_yticklabels(labels)
             ax[0].set_title('Confusion Matrix')
 
             for idx in range(self.model_params['output_dim']):
@@ -150,9 +152,13 @@ class Predictor:
 
             ax[1].plot([0, 1], [0, 1], color='white', linestyle='--')
             ax[1].set_title('Multiclass ROC Curve (One-vs-Rest)')
-            plt.legend(labels)
-            plt.show()
 
+            if self.labels_dict is not None:
+                labels = list(self.labels_dict.values())
+                ax[0].set_xticklabels(labels)
+                ax[0].set_yticklabels(labels)
+                plt.legend(labels)
+        plt.show()
         print(report)
 
         return None
@@ -163,8 +169,15 @@ class Predictor:
         else:
             yhat = self._majority_voting_ensemble(data)
 
-        map = {0: 'Good', 1: 'Hazardous', 2: 'Moderate', 3: 'Poor'}
+        if not self.classification:
+            return yhat
 
-        map_func = np.vectorize(map.get)
-        pred = map_func(yhat)
+
+        if self.labels_dict is not None:
+            map = self.labels_dict
+            map_func = np.vectorize(map.get)
+            pred = map_func(yhat)
+        else:
+            print("No labels provided")
+
         return pred
