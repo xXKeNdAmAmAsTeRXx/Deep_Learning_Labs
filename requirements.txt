@@ -28,5 +28,11 @@ openml==0.14.2
 # TensorBoard
 tensorboard==2.17.0
 
+# Model visualisation
+torchview==0.2.7
+
+# Statistical testing and VIF
+statsmodels==0.14.4
+
 # Jupyter (optional – only needed if not already installed in your environment)
 notebook==7.2.2
