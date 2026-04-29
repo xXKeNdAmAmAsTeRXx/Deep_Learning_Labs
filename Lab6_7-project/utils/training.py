@@ -297,7 +297,7 @@ def train_one_fold(fold_id:int, model, training_loader:DataLoader, val_loader:Da
                 torch.save(model.state_dict(), model_path)
                 print(f'Saved new best model to {model_path}, with new {best_val_loss=}')
 
-    avg_val_loss = running_val_loss / len(val_loader)
+    avg_val_loss = running_val_loss / n_epochs
 
 
     return avg_val_loss
