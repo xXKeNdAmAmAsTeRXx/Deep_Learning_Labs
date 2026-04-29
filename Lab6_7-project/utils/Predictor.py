@@ -29,7 +29,8 @@ class Predictor:
         for f in model_dir_list:
             fold_path = os.path.join(path, f)
             m = MLPClassifier(**model_params)
-            m.load_state_dict(torch.load(fold_path))
+            m.load_state_dict(torch.load(fold_path, map_location=self.device))
+            m.to(self.device)
             self.folds.append(m)
 
         self.model_params = model_params
@@ -131,7 +132,7 @@ class Predictor:
 
 
         if plot_results:
-            labels = ['Moderate', 'Good', 'Poor', 'Hazardous']
+            labels = ['Good','Hazardous','Moderate','Poor']
             fig, ax = plt.subplots(1,2, figsize=(20, 6))
             ax = ax.flatten()
 
@@ -162,7 +163,7 @@ class Predictor:
         else:
             yhat = self._majority_voting_ensemble(data)
 
-        map = {0: 'Moderate', 1: 'Good', 2: 'Poor', 3: 'Hazardous'}
+        map = {0: 'Good', 1: 'Hazardous', 2: 'Moderate', 3: 'Poor'}
 
         map_func = np.vectorize(map.get)
         pred = map_func(yhat)

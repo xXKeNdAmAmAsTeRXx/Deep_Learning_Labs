@@ -135,6 +135,16 @@ def _save_model_dict(parameters:pd.Series, in_out_shape:tuple[int, int], write_m
 
     print(f'Model dict saved in {path}')
 
+def _save_target_labels(target:pd.DataFrame, write_model_dir:str) -> None:
+    labels = list(target.columns)
+    labels_dict = {idx: labels for idx, labels in enumerate(labels)}
+
+    path = os.path.join(write_model_dir, 'data_labels.json')
+    with open(path, 'w', encoding='utf-8-sig') as f:
+        json.dump(labels_dict, f)
+
+    print(f'Labels dict saved in {path}')
+
 def _merge_betas(params_dict: dict) -> dict:
     """Merge beta1/beta2 keys into a single betas tuple if present."""
     beta1 = params_dict.pop('beta1', None)
@@ -188,7 +198,7 @@ def get_train_loaders(dataset:TensorDataset, train_idx, val_idx, batch_size:int=
 def create_training_dict(
     parameters: pd.Series,
     data: pd.DataFrame,
-    target: pd.DataFrame,
+    target: pd.DataFrame | pd.Series,
     criterion: Criterion = CrossEntropyLoss,
     classes: dict = None,
     n_folds: int = 5,
@@ -208,6 +218,9 @@ def create_training_dict(
 
     if write_model_dir is not None:
         _save_model_dict(parameters, in_out_shape=(data.shape[1], target.shape[1]), write_model_dir=write_model_dir)
+
+        if target.shape[1] > 1:
+            _save_target_labels(target, write_model_dir=write_model_dir)
 
     dataset = get_dataSet(X_trainval=data, y_trainval=target)
 
@@ -273,7 +286,7 @@ def train_one_fold(fold_id:int, model, training_loader:DataLoader, val_loader:Da
         if writer is not None:
             writer.add_scalar(f'train_loss/fold_{fold_id}', train_loss, epoch)
             writer.add_scalar(f'val_loss/fold_{fold_id}', val_loss, epoch)
-            writer.add_scalar(f'learining_rate/fold{fold_id}', scheduler.get_last_lr()[0], epoch)
+            writer.add_scalar(f'learning_rate/fold{fold_id}', scheduler.get_last_lr()[0], epoch)
             writer.flush()
 
         if write_model_dir is not None:
@@ -307,7 +320,7 @@ def train_from_dict(training_dict:dict[str, Any]):
 
         # Fold Training
         loss = train_one_fold(fold, model, train_loader, val_loader, optimizer, scheduler, criterion, n_epochs=training_dict['n_epochs'],
-                              write_model_dir=training_dict['write_model_dir'], writer=training_dict['writer'])
+                              write_model_dir=training_dict['write_model_dir'], writer=training_dict['writer'], max_norm=training_dict['max_norm'])
 
         del model, optimizer, scheduler
         gc.collect()
