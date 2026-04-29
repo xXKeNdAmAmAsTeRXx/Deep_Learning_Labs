@@ -10,7 +10,7 @@ Lab2/            – PyTorch tensors, gradient descent, nn.Module
 Lab3/            – MLP classification on MNIST, optimisers, Optuna, dropout
 Lab4/            – MLP regression & multi-label classification, Optuna
 Lab5/            – TensorBoard integration and Optuna visualisation
-Lab6_7-project/  – Milestone project (specification PDF; materials coming soon)
+Lab6_7-project/  – Milestone project: air-quality multiclass classification
 ```
 
 ---
@@ -99,11 +99,28 @@ Covers experiment tracking and visualisation with TensorBoard, integrated into P
 
 ---
 
-### Lab 6 / 7 – Milestone Project *(coming soon)*
+### Lab 6 / 7 – Milestone Project: Air Quality Classification
 
-**Files:** `Lab6_7-project/Lab6_7.pdf`
+**Files:** `Lab6_7-project/1_Dataset_data_cleaning_split.ipynb` · `Lab6_7-project/2_EDA.ipynb` · `Lab6_7-project/3_Optuna.ipynb` · `Lab6_7-project/4_Training.ipynb` · `Lab6_7-project/5_Evaluation_TOP1.ipynb` · `Lab6_7-project/5_Evaluation_TOP2.ipynb` · `Lab6_7-project/5_Evaluation_TOP3.ipynb` · `Lab6_7-project/6_Model_Testing.ipynb`
 
-The project specification is available in `Lab6_7-project/Lab6_7.pdf`. The accompanying notebooks, trained models, and results are currently being prepared and will be added to this repository soon.
+An end-to-end multiclass classification project on the **Air Quality and Pollution Assessment** dataset (5 000 samples, 9 environmental/demographic features, 4 target classes: Good, Moderate, Poor, Hazardous).
+
+- **`1_Dataset_data_cleaning_split.ipynb`** — Loads the dataset from OpenML; checks for missing values; performs stratified train/validation and test split; saves splits to CSV.
+- **`2_EDA.ipynb`** — Exploratory data analysis: pair plots, normality tests, Pearson correlation heatmap, Variance Inflation Factor (VIF), mutual information scores; feature selection rationale; applies `RobustScaler` to all features.
+- **`3_Optuna.ipynb`** — Optuna hyperparameter study (100 trials, 5-fold cross-validation) for MLP learning rate, batch size, and Adam β₁/β₂; results saved to `optuna_results/`; integrated with TensorBoard logging.
+- **`4_Training.ipynb`** — Trains the top-3 Optuna configurations using a custom `SummaryWriter`-backed training loop; saves each fold's model weights and parameters to `Models/`; visualises the best model architecture with `torchview`.
+- **`5_Evaluation_TOP1/2/3.ipynb`** — Per-model evaluation: classification report, confusion matrix, ROC-AUC curves (one-vs-rest), ensemble predictions averaged across folds.
+- **`6_Model_Testing.ipynb`** — Final statistical comparison of the three ensembles on held-out test data using the Friedman test with post-hoc Nemenyi correction (`utils/stat_testing.py`); decision-coverage analysis.
+
+**Utility modules (`Lab6_7-project/utils/`):**
+- `MLPClassifier.py` — Configurable `nn.Module` (ReLU or Tanh activation, variable depth/width).
+- `training.py` — `create_model`, `create_training_dict`, `train_from_dict` helpers with K-fold, gradient clipping, `ReduceLROnPlateau` scheduler.
+- `Predictor.py` — Loads a saved ensemble from disk and provides predict / evaluate methods.
+- `EDA.py` — Helper functions: normality check, VIF calculation, mutual information plot, correlation heatmap, Robust scaling.
+- `stat_testing.py` — `compare_ensembles`: Friedman test + Nemenyi post-hoc critical difference.
+
+**Topics:** multiclass classification, EDA, VIF, feature selection, Optuna, K-fold CV, TensorBoard, ensemble evaluation, Friedman/Nemenyi statistical testing.  
+**Dataset:** Air Quality and Pollution Assessment (OpenML / [Kaggle](https://www.kaggle.com/datasets/mujtabamatin/air-quality-and-pollution-assessment), 5 000 samples).
 
 ---
 
@@ -155,19 +172,22 @@ jupyter lab
 |---|---|---|
 | `torch` | 2.3.1 | All labs (install separately – see above) |
 | `numpy` | 1.26.4 | All labs |
-| `scipy` | 1.13.1 | Lab 3 |
-| `pandas` | 2.2.2 | Lab 4, Lab 5 |
-| `scikit-learn` | 1.5.0 | Lab 1–5 |
-| `matplotlib` | 3.9.0 | Lab 1–5 |
-| `seaborn` | 0.13.2 | Lab 1–2 |
-| `optuna` | 3.6.1 | Lab 3–5 |
-| `openml` | 0.14.2 | Lab 4 |
-| `tensorboard` | 2.17.0 | Lab 5 |
+| `scipy` | 1.13.1 | Lab 3, Lab 6/7 |
+| `pandas` | 2.2.2 | Lab 4, Lab 5, Lab 6/7 |
+| `scikit-learn` | 1.5.0 | Lab 1–5, Lab 6/7 |
+| `matplotlib` | 3.9.0 | Lab 1–5, Lab 6/7 |
+| `seaborn` | 0.13.2 | Lab 1–2, Lab 6/7 |
+| `optuna` | 3.6.1 | Lab 3–5, Lab 6/7 |
+| `openml` | 0.14.2 | Lab 4, Lab 6/7 |
+| `tensorboard` | 2.17.0 | Lab 5, Lab 6/7 |
+| `statsmodels` | 0.14.4 | Lab 6/7 |
+| `torchview` | 0.2.7 | Lab 6/7 |
 
 ---
 
 ## Notes
 
 - All notebooks auto-detect CUDA via `torch.device("cuda" if torch.cuda.is_available() else "cpu")` — no code changes are needed when switching between CPU and GPU.
-- OpenML datasets (MNIST, California Housing, Segment, Scene) are downloaded and cached automatically on first run; internet access is required.
+- OpenML datasets (MNIST, California Housing, Segment, Scene, Air Quality) are downloaded and cached automatically on first run; internet access is required.
 - `Lab4/MLPRegressor.py` must be in the same directory as the Lab 4 notebooks that import it (`from MLPRegressor import MLPRegressor`).
+- The Lab 6/7 project notebooks must be run from the `Lab6_7-project/` directory so that the relative `utils/` imports and `Data/`, `Models/`, `optuna_results/` paths resolve correctly.
