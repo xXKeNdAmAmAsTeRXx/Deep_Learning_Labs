@@ -193,7 +193,7 @@ uv run jupyter lab
 
 | Package | Version | Used in |
 |---|---|---|
-| `torch` | 2.6.0 | All labs (install separately – see above) |
+| `torch` | 2.6.0 | All labs (`uv sync --extra torch-* --group jupyter`) |
 | `numpy` | 1.26.4 | All labs |
 | `scipy` | 1.13.1 | Lab 3, Lab 6/7 |
 | `pandas` | 2.2.2 | Lab 4, Lab 5, Lab 6/7 |
