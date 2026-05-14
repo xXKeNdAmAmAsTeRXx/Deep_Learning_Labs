@@ -142,11 +142,16 @@ Python **3.10** or **3.11** is recommended.
 ### 1. Install `uv`
 
 ```bash
-# macOS / Linux
-curl -LsSf https://astral.sh/uv/install.sh | sh
+# macOS (Homebrew)
+brew install uv
 
-# Windows (PowerShell)
-powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
+# Windows (winget)
+winget install --id=astral-sh.uv -e
+
+# Linux (installer script; review before running)
+curl -LsSf https://astral.sh/uv/install.sh -o /tmp/uv-install.sh
+less /tmp/uv-install.sh
+sh /tmp/uv-install.sh
 ```
 
 ### 2. Install PyTorch with `uv`
