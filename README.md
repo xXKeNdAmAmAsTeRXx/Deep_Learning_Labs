@@ -154,14 +154,15 @@ less /tmp/uv-install.sh
 sh /tmp/uv-install.sh
 ```
 
-### 2. Initialize project metadata with `uv init` (only if needed)
+### 2. (Optional) Initialize metadata with `uv init`
 
 ```bash
-# Run only if pyproject.toml is missing in your local clone:
+# Use this only when creating a derivative project/template
+# that does not already include pyproject.toml:
 uv init --python 3.11  # or: uv init --python 3.10
 ```
 
-This repository already tracks `pyproject.toml`, so most users should skip this step.
+This repository already tracks `pyproject.toml`, so normal usage should skip this step and go straight to `uv sync`.
 
 ### 3. Sync dependencies with `uv sync`
 
