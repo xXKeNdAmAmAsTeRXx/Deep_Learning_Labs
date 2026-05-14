@@ -25,7 +25,10 @@ torch-cu118 = ["torch==2.3.1"]
 torch-cu121 = ["torch==2.3.1"]
 
 [dependency-groups]
-jupyter = ["notebook==7.2.2"]
+jupyter = [
+    "notebook==7.2.2",
+    "jupyterlab==4.2.4",
+]
 
 [[tool.uv.index]]
 name = "pytorch-cpu"
