@@ -11,7 +11,18 @@ Lab3/            – MLP classification on MNIST, optimisers, Optuna, dropout
 Lab4/            – MLP regression & multi-label classification, Optuna
 Lab5/            – TensorBoard integration and Optuna visualisation
 Lab6_7-project/  – Milestone project: air-quality multiclass classification
+lca_courses_projects/ – LangChain Foundation course projects
 ```
+
+---
+
+## Additional LLM Projects
+
+The `lca_courses_projects/` directory contains projects from the LangChain Foundation track.
+
+- **LangChain**: a framework for building LLM-powered applications (chains, prompts, tools, and retrieval).
+- **LangGraph**: an orchestration layer for stateful, multi-step, and agent-like workflows built on top of LangChain concepts.
+- **LangSmith**: a platform for tracing, debugging, evaluating, and monitoring LLM applications.
 
 ---
 
