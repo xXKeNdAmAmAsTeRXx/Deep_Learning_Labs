@@ -158,7 +158,7 @@ sh /tmp/uv-install.sh
 
 ```bash
 # Run only if pyproject.toml is missing in your local clone:
-uv init --python 3.11
+uv init --python 3.11  # or: uv init --python 3.10
 ```
 
 This repository already tracks `pyproject.toml`, so most users should skip this step.

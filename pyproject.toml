@@ -3,6 +3,7 @@ name = "deep-learning-labs"
 version = "0.1.0"
 description = "Deep learning notebooks and utilities for course labs."
 readme = "README.md"
+# 3.13 is not enabled yet to keep the environment aligned with course-tested versions.
 requires-python = ">=3.10,<3.13"
 dependencies = [
     "numpy==1.26.4",
