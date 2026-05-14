@@ -2,9 +2,9 @@
 # Deep Learning Labs – Python Requirements
 # Tested against Python 3.10 / 3.11
 #
-# Install PyTorch separately before running this file (see README.md).
-# Then install the rest of the dependencies with uv:
-#   uv pip install --system -r requirements.txt
+# Legacy dependency list kept for reference.
+# Preferred setup uses uv project metadata + lockfile:
+#   uv sync --extra torch-cpu --group jupyter
 # =============================================================================
 
 # Core scientific stack

@@ -154,34 +154,35 @@ less /tmp/uv-install.sh
 sh /tmp/uv-install.sh
 ```
 
-### 2. Install PyTorch with `uv`
-
-PyTorch must be installed separately so you can choose the right compute backend.
-Use `--system` to install into your current Python environment:
+### 2. Initialize project metadata with `uv init`
 
 ```bash
-# CPU-only (any OS)
-uv pip install --system torch==2.3.1 --index-url https://download.pytorch.org/whl/cpu
-
-# CUDA 11.8
-uv pip install --system torch==2.3.1 --index-url https://download.pytorch.org/whl/cu118
-
-# CUDA 12.1
-uv pip install --system torch==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+uv init --python 3.11
 ```
 
-### 3. Install remaining dependencies with `uv`
+The repository already includes `pyproject.toml`, so if it exists in your clone, keep the tracked file and skip re-initialization.
+
+### 3. Sync dependencies with `uv sync`
+
+Choose one PyTorch backend extra:
 
 ```bash
-uv pip install --system -r requirements.txt
+# CPU-only
+uv sync --extra torch-cpu --group jupyter
+
+# CUDA 11.8
+uv sync --extra torch-cu118 --group jupyter
+
+# CUDA 12.1
+uv sync --extra torch-cu121 --group jupyter
 ```
 
 ### 4. Launch Jupyter
 
 ```bash
-jupyter notebook
+uv run jupyter notebook
 # or
-jupyter lab
+uv run jupyter lab
 ```
 
 ---
