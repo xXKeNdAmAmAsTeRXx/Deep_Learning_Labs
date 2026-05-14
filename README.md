@@ -135,36 +135,40 @@ An end-to-end multiclass classification project on the **Air Quality and Polluti
 
 ---
 
-## Installation
-
-### 1. Create a Python environment
+## Installation (uv)
 
 Python **3.10** or **3.11** is recommended.
 
+### 1. Install `uv`
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate       # Windows: .venv\Scripts\activate
+# macOS / Linux
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Windows (PowerShell)
+powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### 2. Install PyTorch
+### 2. Install PyTorch with `uv` (no new venv required)
 
-PyTorch must be installed separately so you can choose the right compute backend:
+PyTorch must be installed separately so you can choose the right compute backend.
+Use `--system` to install into your current Python environment:
 
 ```bash
 # CPU-only (any OS)
-pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cpu
+uv pip install --system torch==2.3.1 --index-url https://download.pytorch.org/whl/cpu
 
 # CUDA 11.8
-pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu118
+uv pip install --system torch==2.3.1 --index-url https://download.pytorch.org/whl/cu118
 
 # CUDA 12.1
-pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu121
+uv pip install --system torch==2.3.1 --index-url https://download.pytorch.org/whl/cu121
 ```
 
-### 3. Install remaining dependencies
+### 3. Install remaining dependencies with `uv`
 
 ```bash
-pip install -r requirements.txt
+uv pip install --system -r requirements.txt
 ```
 
 ### 4. Launch Jupyter

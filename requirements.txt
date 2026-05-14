@@ -3,8 +3,8 @@
 # Tested against Python 3.10 / 3.11
 #
 # Install PyTorch separately before running this file (see README.md).
-# Then install the rest of the dependencies:
-#   pip install -r requirements.txt
+# Then install the rest of the dependencies with uv:
+#   uv pip install --system -r requirements.txt
 # =============================================================================
 
 # Core scientific stack
