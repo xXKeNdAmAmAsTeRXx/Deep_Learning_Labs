@@ -3,7 +3,7 @@ name = "deep-learning-labs"
 version = "0.1.0"
 description = "Deep learning notebooks and utilities for course labs."
 readme = "README.md"
-requires-python = ">=3.10,<3.12"
+requires-python = ">=3.10,<3.13"
 dependencies = [
     "numpy==1.26.4",
     "scipy==1.13.1",
