@@ -175,8 +175,8 @@ uv sync --extra torch-cpu --group jupyter
 # CUDA 11.8
 uv sync --extra torch-cu118 --group jupyter
 
-# CUDA 12.1
-uv sync --extra torch-cu121 --group jupyter
+# CUDA 12.4
+uv sync --extra torch-cu124 --group jupyter
 ```
 
 ### 4. Launch Jupyter
