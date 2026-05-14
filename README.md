@@ -137,42 +137,54 @@ An end-to-end multiclass classification project on the **Air Quality and Polluti
 
 ## Installation
 
-### 1. Create a Python environment
-
 Python **3.10** or **3.11** is recommended.
 
+### 1. Install `uv`
+
 ```bash
-python -m venv .venv
-source .venv/bin/activate       # Windows: .venv\Scripts\activate
+# macOS (Homebrew)
+brew install uv
+
+# Windows (winget)
+winget install --id=astral-sh.uv -e
+
+# Linux (installer script; review before running)
+curl -LsSf https://astral.sh/uv/install.sh -o /tmp/uv-install.sh
+less /tmp/uv-install.sh
+sh /tmp/uv-install.sh
 ```
 
-### 2. Install PyTorch
-
-PyTorch must be installed separately so you can choose the right compute backend:
+### 2. (Optional) Initialize project with `uv init`
 
 ```bash
-# CPU-only (any OS)
-pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cpu
+# Use this only when creating a derivative project/template
+# that does not already include pyproject.toml:
+uv init --python 3.11  # or: uv init --python 3.10
+```
+
+This repository already includes `pyproject.toml`, so normal usage should skip this step and go straight to `uv sync`.
+
+### 3. Sync dependencies with `uv sync`
+
+Choose one PyTorch backend extra:
+
+```bash
+# CPU-only
+uv sync --extra torch-cpu --group jupyter
 
 # CUDA 11.8
-pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu118
+uv sync --extra torch-cu118 --group jupyter
 
-# CUDA 12.1
-pip install torch==2.3.1 --index-url https://download.pytorch.org/whl/cu121
-```
-
-### 3. Install remaining dependencies
-
-```bash
-pip install -r requirements.txt
+# CUDA 12.4
+uv sync --extra torch-cu124 --group jupyter
 ```
 
 ### 4. Launch Jupyter
 
 ```bash
-jupyter notebook
+uv run jupyter notebook
 # or
-jupyter lab
+uv run jupyter lab
 ```
 
 ---
@@ -181,7 +193,7 @@ jupyter lab
 
 | Package | Version | Used in |
 |---|---|---|
-| `torch` | 2.3.1 | All labs (install separately – see above) |
+| `torch` | 2.6.0 | All labs (`uv sync --extra torch-* --group jupyter`) |
 | `numpy` | 1.26.4 | All labs |
 | `scipy` | 1.13.1 | Lab 3, Lab 6/7 |
 | `pandas` | 2.2.2 | Lab 4, Lab 5, Lab 6/7 |

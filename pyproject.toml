@@ -1,0 +1,53 @@
+[project]
+name = "deep-learning-labs"
+version = "0.1.0"
+description = "Deep learning notebooks and utilities for course labs."
+readme = "README.md"
+# 3.13 is not enabled yet to keep the environment aligned with course-tested versions.
+requires-python = ">=3.10,<3.13"
+dependencies = [
+    "numpy==1.26.4",
+    "scipy==1.13.1",
+    "pandas==2.2.2",
+    "scikit-learn==1.5.0",
+    "matplotlib==3.9.0",
+    "seaborn==0.13.2",
+    "optuna==3.6.1",
+    "openml==0.14.2",
+    "tensorboard==2.17.0",
+    "statsmodels==0.14.4",
+    "torchview==0.2.7",
+]
+
+[project.optional-dependencies]
+torch-cpu = ["torch==2.6.0"]
+torch-cu118 = ["torch==2.6.0"]
+torch-cu124 = ["torch==2.6.0"]
+
+[dependency-groups]
+jupyter = [
+    "notebook==7.5.6",
+    "jupyterlab==4.5.7",
+]
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu118"
+url = "https://download.pytorch.org/whl/cu118"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cu124"
+url = "https://download.pytorch.org/whl/cu124"
+explicit = true
+
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cpu", extra = "torch-cpu" },
+    { index = "pytorch-cu118", extra = "torch-cu118" },
+    { index = "pytorch-cu124", extra = "torch-cu124" },
+]
