@@ -135,7 +135,7 @@ An end-to-end multiclass classification project on the **Air Quality and Polluti
 
 ---
 
-## Installation (uv)
+## Installation
 
 Python **3.10** or **3.11** is recommended.
 
@@ -149,7 +149,7 @@ curl -LsSf https://astral.sh/uv/install.sh | sh
 powershell -ExecutionPolicy ByPass -c "irm https://astral.sh/uv/install.ps1 | iex"
 ```
 
-### 2. Install PyTorch with `uv` (no new venv required)
+### 2. Install PyTorch with `uv`
 
 PyTorch must be installed separately so you can choose the right compute backend.
 Use `--system` to install into your current Python environment:
