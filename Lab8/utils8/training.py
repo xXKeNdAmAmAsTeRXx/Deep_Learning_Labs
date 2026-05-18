@@ -1,12 +1,34 @@
+import json
 import os
 
+import numpy as np
 import torch
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader, Subset
 from torch.utils.tensorboard import SummaryWriter
-from utils.data import AudioDataset
+from utils8.data import AudioDataset
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+def save_model_dict(parameters:dict, write_model_dir:str) -> None:
+    path = os.path.join(write_model_dir, 'model_dict.json')
+    with open(path, 'w', encoding='utf-8-sig') as f:
+        json.dump(parameters, f)
+
+    print(f'Model dict saved in {path}')
+
+def save_target_labels(target:np.ndarray | list, write_model_dir:str) -> None:
+    labels = target
+    labels_dict = {idx: labels for idx, labels in enumerate(labels)}
+
+    path = os.path.join(write_model_dir, 'data_labels.json')
+    with open(path, 'w', encoding='utf-8-sig') as f:
+        json.dump(labels_dict, f)
+
+    print(f'Labels dict saved in {path}')
+
+
+
 
 def get_train_loaders(dataset:AudioDataset | Subset, train_idx, val_idx, batch_size:int=256, shuffle:bool=True):
     train_loader = DataLoader(Subset(dataset, train_idx), batch_size=batch_size, shuffle=True)
