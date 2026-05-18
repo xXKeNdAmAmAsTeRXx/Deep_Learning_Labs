@@ -31,7 +31,7 @@ class AudioDataset(Dataset):
 
         return data, label
 
-def get_weighted_sampler(dataset: AudioDataset) -> WeightedRandomSampler:
+def _get_weighted_sampler(dataset: AudioDataset) -> WeightedRandomSampler:
     labels = torch.tensor(dataset.labels)
     class_counts = torch.bincount(labels, minlength=len(dataset.class_to_idx))
 
@@ -51,7 +51,7 @@ def get_weighted_sampler(dataset: AudioDataset) -> WeightedRandomSampler:
 
 def get_dataloader(root_dir: str, classes: list[str] | None = None, batch_size: int = 32, num_workers: int = 4,) -> DataLoader:
     dataset = AudioDataset(root_dir, classes=classes)
-    sampler = get_weighted_sampler(dataset)
+    sampler = _get_weighted_sampler(dataset)
 
     return DataLoader(
         dataset,
