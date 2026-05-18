@@ -4,6 +4,12 @@ import torchaudio
 import torch
 
 class AudioDataset(Dataset):
+    """Create an Audio Dataset from a directory of audio files
+
+    :param root_dir: Directory of audio files
+    :param classes: List of audio file names (optional if you want specific classes or specific order)
+    """
+
     def __init__(self, root_dir:str, classes: list[str] | None = None):
         if classes is None:
             classes = os.listdir(root_dir)
@@ -50,6 +56,13 @@ def _get_weighted_sampler(dataset: AudioDataset) -> WeightedRandomSampler:
     )
 
 def get_dataloader(root_dir: str, classes: list[str] | None = None, batch_size: int = 32, num_workers: int = 4,) -> DataLoader:
+    """
+    Create a Loader with Audio Dataset from a directory of audio files
+
+    :param root_dir: Directory of audio files
+    :param classes: List of audio file names (optional if you want specific classes or specific order):param root_dir:
+    :return: Weighted RandomSampler Loader
+    """
     dataset = AudioDataset(root_dir, classes=classes)
     sampler = _get_weighted_sampler(dataset)
 
