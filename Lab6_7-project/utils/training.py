@@ -18,7 +18,7 @@ from torch.optim import SGD, Adam
 from torch.nn import CrossEntropyLoss, MSELoss
 from torch.optim.lr_scheduler import ReduceLROnPlateau, LRScheduler, LambdaLR
 
-from utils.MLPClassifier import MLPClassifier
+from utils8.MLPClassifier import MLPClassifier
 
 
 

@@ -5,7 +5,7 @@ import os
 import numpy as np
 import pandas as pd
 import torch
-from utils.MLPClassifier import MLPClassifier
+from utils8.MLPClassifier import MLPClassifier
 from sklearn.metrics import classification_report, RocCurveDisplay, confusion_matrix, mean_squared_error, \
     r2_score, roc_curve, auc
 import matplotlib.pyplot as plt
