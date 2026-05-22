@@ -1,4 +1,6 @@
 import os
+
+from torchvision.transforms import v2
 from torch.utils.data import Dataset, DataLoader, WeightedRandomSampler
 import torchaudio
 import torch
@@ -70,10 +72,28 @@ class AudioDataset2(Dataset):
         data, sr = torchaudio.load(self.file_paths[idx])
         label = self.labels[idx]
 
-        if self.transforms:
+        if self.transforms is not None:
             data = self.transforms(data)
 
         return data, label
+
+
+# Additional Class for handling Subsets
+class TransformedSubset(Dataset):
+    def __init__(self, subset:torch.utils.data.Subset, transform: v2 =None):
+        self.subset = subset
+        self.transform = transform
+
+    def __len__(self):
+        return len(self.subset)
+
+    def __getitem__(self, idx):
+        waveform, label = self.subset[idx]
+
+        if self.transform:
+            waveform = self.transform(waveform)
+
+        return waveform, label
 
 
 def _get_weighted_sampler(dataset: AudioDataset) -> WeightedRandomSampler:
