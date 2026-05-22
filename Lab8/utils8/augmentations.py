@@ -79,7 +79,7 @@ class AudioGaussianNoise:
     def __init__(self, snr_db: torch.Tensor = torch.tensor([20])):
         self.snr_db = snr_db
 
-    def __call__(self, wave: torch.Tensor, snr_db: torch.Tensor = torch.tensor([20, 10, 3])) -> torch.Tensor:
+    def __call__(self, wave: torch.Tensor, snr_db: torch.Tensor = torch.tensor([20])) -> torch.Tensor:
         noise = torch.randn_like(wave)
         return F.add_noise(wave, noise, snr_db)
 
@@ -95,23 +95,15 @@ class AudioReverb:
         ir     = torch.randn(ir_len) * decay
         ir     = ir / ir.abs().max().clamp(min=1e-8)
 
-        if waveform.ndim == 2:
-            wav_3d = waveform.unsqueeze(0)
-        else:
-            wav_3d = waveform
-
-        num_channels = wav_3d.shape[1]
-
+        wav_3d = waveform.unsqueeze(0)
         ir_3d  = ir.flip(0).unsqueeze(0).unsqueeze(0)
-        ir_3d  = ir_3d.repeat(num_channels, 1, 1)
         padding = ir_len - 1
 
         reverbed = torch.nn.functional.conv1d(
-            wav_3d, ir_3d, padding=padding, groups=num_channels
+            wav_3d, ir_3d, padding=padding
         )[..., :waveform.shape[-1]]
 
-        if waveform.ndim == 2:
-            reverbed = reverbed.squeeze(0)
+        reverbed = reverbed.squeeze(0)
 
         scale = waveform.abs().max() / reverbed.abs().max().clamp(min=1e-8)
         return reverbed * scale
