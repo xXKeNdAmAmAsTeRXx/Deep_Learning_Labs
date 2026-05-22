@@ -37,6 +37,45 @@ class AudioDataset(Dataset):
 
         return data, label
 
+class AudioDataset2(Dataset):
+    """Create an Audio Dataset from a directory of audio files
+
+    :param root_dir: Directory of audio files
+    :param classes: List of audio file names (optional if you want specific classes or specific order)
+    """
+
+    def __init__(self, root_dir:str, transforms:v2.Compose = None, classes: list[str] | None = None):
+        if classes is None:
+            classes = os.listdir(root_dir)
+
+        self.class_to_idx = {name: idx for idx, name in enumerate(classes)}
+
+        file_paths = []
+        labels = []
+
+        for c in classes:
+            files = os.listdir(os.path.join(root_dir, c))
+            for file in files:
+                file_paths.append(os.path.join(root_dir, c, file))
+                labels.append(self.class_to_idx[c])
+
+        self.file_paths = file_paths
+        self.labels = labels
+        self.transforms = transforms
+
+    def __len__(self) -> int:
+        return  len(self.file_paths)
+
+    def __getitem__(self, idx: int) -> tuple[torch.Tensor, int]:
+        data, sr = torchaudio.load(self.file_paths[idx])
+        label = self.labels[idx]
+
+        if self.transforms:
+            data = self.transforms(data)
+
+        return data, label
+
+
 def _get_weighted_sampler(dataset: AudioDataset) -> WeightedRandomSampler:
     labels = torch.tensor(dataset.labels)
     class_counts = torch.bincount(labels, minlength=len(dataset.class_to_idx))
