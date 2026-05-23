@@ -6,7 +6,8 @@ import torch
 from torch.nn.utils import clip_grad_norm_
 from torch.utils.data import DataLoader, Subset
 from torch.utils.tensorboard import SummaryWriter
-from utils8.data import AudioDataset
+from torchvision.transforms import v2
+from utils8.data import AudioDataset, TransformedSubset
 
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
@@ -32,6 +33,12 @@ def save_target_labels(target:np.ndarray | list, write_model_dir:str) -> None:
 
 def get_train_loaders(dataset:AudioDataset | Subset, train_idx, val_idx, batch_size:int=256, shuffle:bool=True):
     train_loader = DataLoader(Subset(dataset, train_idx), batch_size=batch_size, shuffle=True)
+    val_loader = DataLoader(Subset(dataset, val_idx), batch_size=batch_size)
+
+    return train_loader, val_loader
+
+def get_train_loaders_with_transforms(dataset:AudioDataset | Subset, train_idx, val_idx, transform:v2 = None, batch_size:int=256, shuffle:bool=True):
+    train_loader = DataLoader(TransformedSubset(Subset(dataset, train_idx), transform=transform), batch_size=batch_size, shuffle=True)
     val_loader = DataLoader(Subset(dataset, val_idx), batch_size=batch_size)
 
     return train_loader, val_loader
