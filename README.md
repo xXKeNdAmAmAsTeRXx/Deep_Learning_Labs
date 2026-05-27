@@ -11,6 +11,8 @@ Lab3/            – MLP classification on MNIST, optimisers, Optuna, dropout
 Lab4/            – MLP regression & multi-label classification, Optuna
 Lab5/            – TensorBoard integration and Optuna visualisation
 Lab6_7-project/  – Milestone project: air-quality multiclass classification
+Lab8/            – Audio classification pipeline, Optuna, transfer learning, augmentation
+Lab9/            – Probability calibration and sklearn wrapper integration for PyTorch models
 lca_courses_projects/ – LangChain Foundation course projects
 ```
 
@@ -132,6 +134,42 @@ An end-to-end multiclass classification project on the **Air Quality and Polluti
 
 **Topics:** multiclass classification, EDA, VIF, feature selection, Optuna, K-fold CV, TensorBoard, ensemble evaluation, Friedman/Nemenyi statistical testing.  
 **Dataset:** Air Quality and Pollution Assessment (OpenML / [Kaggle](https://www.kaggle.com/datasets/mujtabamatin/air-quality-and-pollution-assessment), 5 000 samples).
+
+---
+
+### Lab 8 – Audio Classification: Preprocessing, Optimisation, Transfer Learning, and Augmentation
+
+**Files:** `Lab8/1_AudioData_Preprocessing.ipynb` · `Lab8/2_Training.ipynb` · `Lab8/3_Optuna.ipynb` · `Lab8/4_Training_optimized.ipynb` · `Lab8/5_dataset_size.ipynb` · `Lab8/6_Transfer_Learning.ipynb` · `Lab8/7_data_augmentation.ipynb` · `Lab8/8_training_aug.ipynb`
+
+Builds an end-to-end audio-classification workflow, from waveform preprocessing to model optimisation and robustness checks.
+
+- **`1_AudioData_Preprocessing.ipynb`** — Audio preprocessing pipeline with `librosa`/`torchaudio`: resampling to 8 kHz, waveform and mel-spectrogram visualisation, and dataset directory preparation.
+- **`2_Training.ipynb`** — Baseline training and evaluation of a custom 1D CNN classifier (`utils8/AudioCNN.py`) on processed audio data.
+- **`3_Optuna.ipynb`** — Optuna-based hyperparameter search for audio-CNN training with experiment tracking.
+- **`4_Training_optimized.ipynb`** — Retraining and validating models with the best Optuna configuration.
+- **`5_dataset_size.ipynb`** — Sensitivity study of model performance versus training-dataset size.
+- **`6_Transfer_Learning.ipynb`** — Transfer-learning experiments using previously trained audio models and cross-dataset fine-tuning.
+- **`7_data_augmentation.ipynb`** — Audio augmentation design and testing (e.g., noise injection, pitch shift, reverb, bass boost) using custom transforms from `utils8/augmentations.py`.
+- **`8_training_aug.ipynb`** — Training/evaluation with augmented data and comparison against non-augmented baselines.
+
+**Topics:** audio preprocessing, mel-spectrograms, 1D CNNs, Optuna, transfer learning, data augmentation, model comparison.  
+**Dataset:** Audio command recordings organized in class-based directories (processed to 1-second, 8 kHz samples in notebook workflows).
+
+---
+
+### Lab 9 – Model Calibration and sklearn-Compatible Wrappers
+
+**Files:** `Lab9/1_toy_set.ipynb` · `Lab9/2_ensemble_testing.ipynb` · `Lab9/3_Wrapper.ipynb` · `Lab9/4_real_data_calibration.ipynb`
+
+Focuses on probability calibration for neural classifiers and interoperability between PyTorch models and sklearn tooling.
+
+- **`1_toy_set.ipynb`** — Binary toy-dataset experiments with temperature scaling; compares pre- vs post-calibration probabilities and Brier score.
+- **`2_ensemble_testing.ipynb`** — Ensemble-level calibration analysis with mean-response aggregation and statistical comparison of calibrated vs uncalibrated predictions.
+- **`3_Wrapper.ipynb`** — Implements an sklearn-compatible wrapper (`BaseEstimator`/`ClassifierMixin`) around a PyTorch model and applies `CalibratedClassifierCV` (isotonic calibration).
+- **`4_real_data_calibration.ipynb`** — Extends wrapper + calibration workflow to a real multiclass OpenML dataset (`openml.datasets.get_dataset(46880)`), with one-vs-rest calibration curves.
+
+**Topics:** temperature scaling, isotonic calibration, Brier score, calibration curves, ensemble probability aggregation, sklearn wrapper design.  
+**Dataset:** Synthetic toy data (notebooks 1–3) and OpenML dataset 46880 (notebook 4).
 
 ---
 
