@@ -1,6 +1,7 @@
 .idea
+.venv
 venv
 */Models
 */runs
 */Data
-venv
+*/lightning_logs
