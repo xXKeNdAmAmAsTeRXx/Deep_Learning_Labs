@@ -34,7 +34,20 @@ torchview==0.2.7
 # Statistical testing and VIF
 statsmodels==0.14.4
 
+# Audio processing
+librosa==0.10.2.post1
+torchaudio
+
+# Lightning ecosystem and tuning
+pytorch-lightning==2.4.0
+ray[tune]==2.55.0
+torchmetrics==1.4.0.post0
+
+# Dataset download helper (Kaggle)
+kagglehub==0.3.4
+
+# Symbolic helpers
+sympy==1.13.1
+
 # Jupyter (optional – only needed if not already installed in your environment)
 notebook==7.2.2
-
-torchaudio
