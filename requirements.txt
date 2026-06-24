@@ -39,8 +39,8 @@ librosa==0.10.2.post1
 torchaudio
 
 # Lightning ecosystem and tuning
-pytorch-lightning==2.3.3
-ray[tune]==2.31.0
+pytorch-lightning==2.4.0
+ray[tune]==2.55.0
 torchmetrics==1.4.0.post0
 
 # Dataset download helper (Kaggle)

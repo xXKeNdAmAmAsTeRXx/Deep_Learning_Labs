@@ -305,8 +305,8 @@ jupyter lab
 | `torchview` | 0.2.7 | Lab 6/7 |
 | `torchaudio` | (see requirements) | Lab 8 |
 | `librosa` | 0.10.2.post1 | Lab 8 |
-| `pytorch-lightning` | 2.3.3 | Lab 11, Lab 14/15 |
-| `ray[tune]` | 2.31.0 | Lab 11, Lab 14/15 |
+| `pytorch-lightning` | 2.4.0 | Lab 11, Lab 14/15 |
+| `ray[tune]` | 2.55.0 | Lab 11, Lab 14/15 |
 | `torchmetrics` | 1.4.0.post0 | Lab 11 |
 | `kagglehub` | 0.3.4 | Lab 11, Lab 14/15 |
 | `sympy` | 1.13.1 | Lab 14/15 |
