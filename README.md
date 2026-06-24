@@ -13,6 +13,11 @@ Lab5/            – TensorBoard integration and Optuna visualisation
 Lab6_7-project/  – Milestone project: air-quality multiclass classification
 Lab8/            – Audio classification pipeline, Optuna, transfer learning, augmentation
 Lab9/            – Probability calibration and sklearn wrapper integration for PyTorch models
+Lab10/           – Model explainability with permutation importance and PDP on toy data
+Lab11/           – PyTorch Lightning workflows with Ray Tune-based optimisation
+Lab12/           – Lecture/lab materials (PDF only)
+Lab13/           – Lecture/lab materials (PDF only)
+Lab_14_15-project/ – Final project: obesity-level classification, calibration, and XAI
 lca_courses_projects/ – LangChain Foundation course projects
 ```
 
@@ -173,6 +178,73 @@ Focuses on probability calibration for neural classifiers and interoperability b
 
 ---
 
+### Lab 10 – Explainable AI on Toy Classification and Regression Tasks
+
+**Files:** `Lab10/1_feature_permutation_toy_set.ipynb` · `Lab10/2_Regression_toy_set_XAI.ipynb`
+
+Introduces model explainability workflows for custom PyTorch models wrapped with sklearn-compatible interfaces.
+
+- **`1_feature_permutation_toy_set.ipynb`** — Binary toy classification with a PyTorch MLP wrapped as a sklearn estimator; evaluates performance and ranks features using permutation importance.
+- **`2_Regression_toy_set_XAI.ipynb`** — Toy regression with wrapped PyTorch models; compares architectures and applies permutation importance plus partial dependence visualisation.
+
+**Topics:** XAI, permutation importance, partial dependence plots, sklearn wrappers, toy datasets.  
+**Dataset:** Synthetic classification/regression data generated with sklearn.
+
+---
+
+### Lab 11 – PyTorch Lightning and Hyperparameter Tuning
+
+**Files:** `Lab11/1_PyTorchLightning_INTRO.ipynb` · `Lab11/2_Regression.ipynb`
+
+Presents a structured training workflow with PyTorch Lightning, callbacks, and tuning integrations.
+
+- **`1_PyTorchLightning_INTRO.ipynb`** — Builds Lightning `DataModule`/`LightningModule` style pipelines for regression tasks; demonstrates checkpointing, early stopping, and trainer orchestration.
+- **`2_Regression.ipynb`** — Extends Lightning regression with richer preprocessing, dataset handling, and Ray Tune-assisted hyperparameter search.
+
+**Topics:** PyTorch Lightning, Trainer/callbacks, early stopping, checkpointing, Ray Tune, regression.  
+**Dataset:** Synthetic regression data and downloaded tabular regression data in notebook workflows.
+
+---
+
+### Lab 12 – Supplemental Materials
+
+**Files:** `Lab12/Lab12.pdf`
+
+Contains lab/lecture reference material distributed as PDF.
+
+**Topics:** supplemental course material.  
+**Dataset:** N/A.
+
+---
+
+### Lab 13 – Supplemental Materials
+
+**Files:** `Lab13/Lab13.pdf`
+
+Contains lab/lecture reference material distributed as PDF.
+
+**Topics:** supplemental course material.  
+**Dataset:** N/A.
+
+---
+
+### Lab 14 / 15 – Final Project: Obesity Classification, Calibration, and Explainability
+
+**Files:** `Lab_14_15-project/1_Data.ipynb` · `Lab_14_15-project/2_EDA.ipynb` · `Lab_14_15-project/3_hyperparameters_and_training.ipynb` · `Lab_14_15-project/4_Cal_and_Uncertanity.ipynb` · `Lab_14_15-project/5_XAI.ipynb`
+
+An end-to-end project on obesity-level prediction, covering data preparation, model development, uncertainty calibration, and interpretation.
+
+- **`1_Data.ipynb`** — Loads and validates project data, handles quality checks, and prepares working tables.
+- **`2_EDA.ipynb`** — Exploratory analysis with statistical testing and feature processing for tabular obesity data.
+- **`3_hyperparameters_and_training.ipynb`** — Model training pipeline with hyperparameter search and Lightning/Ray Tune integration.
+- **`4_Cal_and_Uncertanity.ipynb`** — Probability calibration and uncertainty analysis using sklearn-compatible wrappers.
+- **`5_XAI.ipynb`** — Post-hoc explainability for trained models using permutation-based importance workflows.
+
+**Topics:** tabular classification, EDA, hyperparameter tuning, calibration, uncertainty, XAI.  
+**Dataset:** Obesity Levels dataset (downloaded in notebook workflows).
+
+---
+
 ## Installation
 
 ### 1. Create a Python environment
@@ -231,6 +303,13 @@ jupyter lab
 | `tensorboard` | 2.17.0 | Lab 5, Lab 6/7 |
 | `statsmodels` | 0.14.4 | Lab 6/7 |
 | `torchview` | 0.2.7 | Lab 6/7 |
+| `torchaudio` | (see requirements) | Lab 8 |
+| `librosa` | 0.10.2.post1 | Lab 8 |
+| `pytorch-lightning` | 2.3.3 | Lab 11, Lab 14/15 |
+| `ray[tune]` | 2.31.0 | Lab 11, Lab 14/15 |
+| `torchmetrics` | 1.4.0.post0 | Lab 11 |
+| `kagglehub` | 0.3.4 | Lab 11, Lab 14/15 |
+| `sympy` | 1.13.1 | Lab 14/15 |
 
 ---
 
